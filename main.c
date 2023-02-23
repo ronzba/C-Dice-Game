@@ -112,20 +112,37 @@ int main(int argc, char *argv[])
 		
 	// Choose TYPE (Bonus, Double, Regular)	
 		int randPoint = randPointFunc();
-		int chooseType1 = chooseType(randPoint);		
+		int pointsToPlayers = chooseType(randPoint);		
 		
 		printf("\nDice     : ");
 
 	// Choose Dice Number	
 		int randDiceNum = diceRoll();
 		printf("%d\n", randDiceNum);		
-		
+	
+	// Display Points	
 		printf("Points   : ");
-		printf("%d\n", chooseType1);
-		printf("P1       : \n");
-		printf("P2       : \n\n");
+		printf("%d\n", pointsToPlayers);
 		
+	// Display Score
 
+		
+		int player1 = 0;
+		int player2 = 0;
+		
+		if (randPlayer % 2 == 0 && randDiceNum % 2 == 0)
+		{
+			player2 = pointsToPlayers;
+			
+		}
+		else
+		{
+			player1 = pointsToPlayers;
+			
+		}
+
+		printf("P1       : %d\n", player1);
+		printf("P2       : %d\n\n", player2);
 		
 
 		
