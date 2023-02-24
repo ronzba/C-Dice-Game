@@ -8,6 +8,7 @@ int chooseType(int);
 int diceRoll();
 int randPointFunc();
 int randPlayerfunc();
+void printRoundPoints();
 
 // This Function Starts the Game by Welcoming and Storing the Number of Rounds
 int headLineStart()
@@ -66,7 +67,6 @@ int randPointFunc()
 {
 	int pointNum[10] = {10,20,30,40,50,60,70,80,90,100};
 	
-	// Choose Randome Points
 	int lengthPoint = sizeof(pointNum) / sizeof(pointNum[0]);
 	int randIndex = rand() % lengthPoint;
 	int randPoint = pointNum[randIndex];
@@ -79,7 +79,6 @@ int randPlayerFunc()
 {
 	int pointNum[2] = {1, 2};
 	
-	// Choose Randome Points
 	int lengthPoint = sizeof(pointNum) / sizeof(pointNum[0]);
 	int randIndex = rand() % lengthPoint;
 	int randPlayer = pointNum[randIndex];
@@ -150,11 +149,11 @@ int main(int argc, char *argv[])
 		
 	}
 
-	printf("\n##################\n");
+	printf("    GAME OVER\n");
+	printf("##################\n");
 	if (player1 -1 > player2)
 	{
 		printf(" Player 1 Wins!!!\n");
-
 	}
 	else
 	{
