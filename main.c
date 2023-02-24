@@ -97,6 +97,8 @@ int main(int argc, char *argv[])
 	int numOfRounds = headLineStart(); 
 	int i;
 	int ranTypeNum = 0;
+	int player1;
+	int player2;
 	
 	for (i = 1; i < numOfRounds + 1; i++)
 	{
@@ -126,28 +128,38 @@ int main(int argc, char *argv[])
 		
 	// Display Score
 
-		
-		int player1 = 0;
-		int player2 = 0;
-		
 		if (randPlayer % 2 == 0 && randDiceNum % 2 == 0)
 		{
-			player2 = pointsToPlayers;
-			
+			player2 = player2 + pointsToPlayers;
 		}
-		else
+		else if (randPlayer %2 != 0 && randDiceNum %2 !=0)
 		{
-			player1 = pointsToPlayers;
-			
+			player1 = player1 + pointsToPlayers;
+		}
+		else if (randPlayer %2 != 0 && randDiceNum % 2 == 0)
+		{
+			player1 = player1 - pointsToPlayers;	
+		}
+		else 
+		{
+			player2 = player2 - pointsToPlayers;
 		}
 
-		printf("P1       : %d\n", player1);
+		printf("P1       : %d\n", player1 - 1);
 		printf("P2       : %d\n\n", player2);
 		
-
-		
 	}
-	
-	
+
+	printf("\n##################\n");
+	if (player1 -1 > player2)
+	{
+		printf(" Player 1 Wins!!!\n");
+
+	}
+	else
+	{
+		printf(" Player 2 Wins!!!\n");
+	}
+	printf("##################\n");
 	return 0;
 }
