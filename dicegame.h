@@ -52,25 +52,26 @@ char *evaluatePostfix( char *str )
     /* Your variable Declarations: */
     int tokenCount, i;
     char** arrTokens = tokenizeString( str, &tokenCount ); /* Currently commented out to prevent a memory leak.  Uncomment to get the tokens from str. */
-    char *op1, *op2, *result;
+    char *op1, *op2, *temp, *result;
 
     // Create Stack s
     Stack *s = createStack();
     // For each token, x, in the postfix expression:
     for (i = 0; i < tokenCount; i++){
         // if x is True or False push it to the stack
-        if (strequals(arrTokens[i], 'T') || strequals(arrTokens[i], 'F')){
+        if (strequals(arrTokens[i], 'T') || strequals(arrTokens[i], 'F')){ 
                 push(s, arrTokens[i]);
         }
         // Else if x is a unary operator
         else if(strequals(arrTokens[i], 'NOT')){
 
             // if you do not have at least one operand in s, return an error in boolean (and free ur data)
-            if(op1 == NULL){
-                op1 = booleanToString(ERROR);
+            if(temp == NULL){
+                temp = booleanToString(ERROR);
                 return op1; // Boolean Error
-                freeStackElements(s);
+               // freeStackElements(s);
                 freeStack(s); // DO I NEED THIS?
+                free(temp);
             }else{
                 continue;
             }
@@ -78,11 +79,13 @@ char *evaluatePostfix( char *str )
             op1 = pop(s);
 
             // Compute x op1 (see table)
-            *result = !op1;
+            result = !op1;
+            
             // Push the result into s
             push(s,result);
             // free op1 and x
             free(op1);
+            free(result);
             free(arrTokens[i]);
 
         // if x is a binary operator
@@ -91,7 +94,8 @@ char *evaluatePostfix( char *str )
             if (op1 == NULL && op2 == NULL){
                 op1 = booleanToString(ERROR);
                 return op1; // Boolean Error
-                freeStackElements(s);
+               //freeStackElements(s);
+                free(op1);
                 freeStack(s); // DO I NEED THIS?
             }else{
                 continue;
@@ -101,18 +105,134 @@ char *evaluatePostfix( char *str )
             op2 = pop(s);
             // pop and operand op1 from s
             op1 = pop(s);
-            // Compute op1, op2 x(see binary table)       NEED TO FINISH THIS
-            int var = 0;
-            switch (var){
-                case 1
-            }
-            // push the result to s
-
-            //free op1 op2 and x
+            // Compute op1, op2 x(see binary table)     
+            
+            // && AND
+            if (strequals(op2,'T') && strequals(op1,'T')){     
+				// push the result to s
+				push(s, op2);    	
+			} else if (strequals(op2,'T') && strequals(op1,'F')){
+				push(s, op2);
+			} else if (strequals(op2,'F') && strequals(op1,'T')){
+				push(s, op2);
+			} else if (strequals(op2, 'F') && strequals(op1,'F')){
+				push(s, op1);
+				
+			// NAND !(op1 && op2)
+			}else if (!(strequals(op1, 'T') && strequals(op2, 'T'))){
+				strcpy('F', result);
+				push(s,result);
+			}else if (!(strequals(op1, 'T') && strequals(op2, 'F'))){
+				push(s,op1);
+			}else if (!(strequals(op1, 'F') && strequals(op2, 'T'))){
+				push(s,op2);
+			}else if (!(strequals(op1, 'F') && strequals(op2, 'F'))){
+				strcpy('T', result);
+				push(s,result);
+				
+			// OR op1 || op2
+			} else if (strequals(op1, 'T') || strequals(op2, 'T')){
+				push(s, op1);
+			} else if (strequals(op1, 'T') || strequals(op2, 'F')){
+				push(s, op1);
+			} else if (strequals(op1, 'F') || strequals(op2, 'T')){
+				push(s, op2);
+			} else if (strequals(op1, 'F') || strequals(op2, 'F')){
+				strcpy('F', result);
+				push(s,result);
+				
+			// NOR !(op1 || op2)
+			} else if (!(strequals(op1, 'T') || strequals(op2, 'T'))){
+				strcpy('T', result);
+				push(s,result);
+			} else if (!(strequals(op1, 'T') || strequals(op2, 'F'))){
+				strcpy('F', result);
+				push(s,result);
+			} else if (!(strequals(op1, 'F') || strequals(op2, 'T'))){
+				strcpy('F', result);
+				push(s,result);
+			} else if (!(strequals(op1, 'F') || strequals(op2, 'F'))){
+				strcpy('T', result);
+				push(s,result);
+				
+			// XOR op1 != op2
+			}else if(strequals(op1, 'T') != strequals(op2, 'T')){
+				strcpy('F', result);
+				push(s,result);
+			}else if(strequals(op1, 'T') != strequals(op2, 'F')){
+				strcpy('T', result);
+				push(s,result);
+			}else if(strequals(op1, 'F') != strequals(op2, 'T')){
+				strcpy('T', result);
+				push(s,result);
+			}else if(strequals(op1, 'F') != strequals(op2, 'F')){
+				strcpy('F', result);
+				push(s,result);
+				
+			// COND !op1 || op2
+			}else if(!strequals(op1, 'T') || strequals(op2, 'T')){
+				strcpy('T', result);
+				push(s,result);
+			}else if(!strequals(op1, 'T') || strequals(op2, 'F')){
+				strcpy('F', result);
+				push(s,result);
+			}else if(!strequals(op1, 'F') || strequals(op2, 'T')){
+				strcpy('T', result);
+				push(s,result);
+			}else if(!strequals(op1, 'F') || strequals(op2, 'F')){
+				strcpy('T', result);
+				push(s,result);
+				
+			// BICOND op1 == op2
+			}else if(strequals(op1, 'T') == strequals(op2, 'T')){
+				strcpy('T', result);
+				push(s,result);
+			}else if(strequals(op1, 'T') == strequals(op2, 'F')){
+				strcpy('F', result);
+				push(s,result);
+			}else if(strequals(op1, 'F') == strequals(op2, 'T')){
+				strcpy('F', result);
+				push(s,result);
+			}else if(strequals(op1, 'F') == strequals(op2, 'F')){
+				strcpy('T', result);
+				push(s,result);
+			}
+			
+			// If it contains more that 1 operand after all of the tokes are evaluated return an error
+			else if (temp == NULL){
+                temp = booleanToString(ERROR);
+                return temp; // Boolean Error
+            }else{
+            // Return and pop the only value in the Stack
+            	result = pop(s);
+            	return result;
+			}
+            
+		    /* String Combination Code */
+				strcpy(temp, " ( ");
+				strcat(temp, op1);
+				free(op1);
+				strcat(temp, " ");
+				strcat(temp, arrTokens[i]);
+				strcat(temp, " ");
+				strcat(temp, op2);
+				free(op2);
+				strcat(temp, " ) ");
+				push(s, temp);
+				free(temp);
+				
+            	//free op1 op2 and x
+				free(op1);
+				free(op2);
+				free(result);
+				free(arrTokens[i]);
+				free(temp);
+				
+            
         }
     }
 
-
+		
 
 
 
