@@ -150,3 +150,120 @@ void printTheWinner(player1, player2)
 	return 0;
 	
 }
+
+#include "paintRoom.h"
+
+typedef struct Coordinates
+{    
+    int xCoo;           
+    int yCoo;           
+} Coordinates;
+
+void recPaintRoom( RoomData room, int row, int col, int distanceFromA, char letter);
+Coordinates findA(RoomData room);
+/* declare any other helper functions here*/
+
+/* printName
+ * input: none
+ * output: none
+ *
+ * Prints name the student who worked on this solution
+ */
+void printName( )
+{
+    /* TODO : Fill in your name*/
+    printf("\nThis solution was completed by:\n");
+    printf("Rodrigo Nunez\n");
+}
+
+/* TODO
+ * paintRoom
+ * input: the room to process
+ * output: N/A
+ *
+ * This non-recursive function is called by the driver and it makes the initial call to recursive function recPaintRoom.
+ */
+void paintRoom( RoomData room ){
+
+	int row, col;
+	int distanceFromA = 0;
+	char letter = 65;
+	Coordinates coordinates;
+	
+    /* Call any other helper functions (a helper function to find the location of 'A' in room may be handy) */
+	coordinates = findA(room);
+	
+	row = coordinates.yCoo;
+ 	col = coordinates.xCoo; 
+ 	
+    /* Call your recursive function here */
+    recPaintRoom( room, row, col, distanceFromA, letter);
+}
+
+/* TODO
+ * recPaintRoom
+ * input: the room to process, the row and column of the current location being explored, the distance traveled from 'A'
+ * output: N/A
+ */
+void recPaintRoom( RoomData room, int row, int col, int distanceFromA, char letter)
+{
+    /* Base cases: */
+    if((room.roomArray[row][col] == '*')) {
+		return;
+	}
+    /* Recursive cases: */
+    if (distanceFromA < 25) {
+	    room.roomArray[row][col] = (distanceFromA + letter);
+	} else {
+	    room.roomArray[row][col] = 'Z';
+	}
+    
+    /*Move to the left*/
+    if(room.roomArray[row][col - 1] == ' ' || room.roomArray[row][col] < room.roomArray[row][col - 1])
+	{
+		recPaintRoom(room,row,(col - 1),(distanceFromA + 1), letter);
+	}
+	
+    /*Move to the right*/	
+    if(room.roomArray[row][col + 1] == ' ' || room.roomArray[row][col] < room.roomArray[row][col + 1])
+	{
+		recPaintRoom(room,row,(col + 1),(distanceFromA + 1), letter);
+	}
+	
+    /*Move down*/	
+    if(room.roomArray[row - 1][col] == ' ' || room.roomArray[row][col] < room.roomArray[row - 1][col])
+	{
+		recPaintRoom(room,(row - 1),col,(distanceFromA + 1), letter);
+	}
+	
+    /*Move up*/	
+    if(room.roomArray[row + 1][col] == ' ' || room.roomArray[row][col] < room.roomArray[row + 1][col])
+	{
+		recPaintRoom(room,(row + 1),col,(distanceFromA + 1), letter);
+	}
+    return;
+}
+
+Coordinates findA(RoomData room){
+	
+	 int i, j;
+	 Coordinates coordinates;
+
+    for( i=0; i<room.numrows; i++ )
+	{
+        for( j=0; j<room.numcols; j++ )
+		{
+        	if ( room.roomArray[i][j] == 'A')
+			{
+        		coordinates.yCoo = i;
+        		coordinates.xCoo = j;
+        		return coordinates;
+			}
+		}
+    }
+    printf("Did not find 'A'\n");
+    return coordinates;
+}
+
+
+
